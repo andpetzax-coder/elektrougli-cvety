@@ -770,7 +770,7 @@
 
     function setPicked(b) {
       picked = b || null;
-      if (b) { pickedName.textContent = '«' + b.name + '» — ' + b.price; pickedBox.hidden = false; }
+      if (b) { pickedName.textContent = '«' + b.name + '» — ' + ((b.price && String(b.price).trim()) || 'уточнить'); pickedBox.hidden = false; }
       else { pickedBox.hidden = true; }
     }
 
@@ -848,6 +848,7 @@
     window.BUKETY_DNYA.forEach(function (b, i) {
       var card = document.createElement('figure');
       card.className = 'bd-card' + (i === 0 ? ' bd-card--xl' : i < 3 ? ' bd-card--md' : ' bd-card--sm');
+      var sum = (b.price && String(b.price).trim()) || 'уточнить';
       if (b.sold) {
         card.classList.add('bd-card--sold');
         card.setAttribute('aria-label', b.name + ' — продано');
@@ -857,7 +858,7 @@
       } else {
         card.tabIndex = 0;
         card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', 'Заказать букет дня: ' + b.name + ', ' + (b.old ? 'вместо ' + b.old + ' ' : '') + b.price);
+        card.setAttribute('aria-label', 'Заказать букет дня: ' + b.name + ', ' + (b.old ? 'вместо ' + b.old + ' ' : '') + sum);
       }
       var img = document.createElement('img');
       img.src = b.photo; img.alt = b.name; img.loading = 'lazy'; img.decoding = 'async';
@@ -870,7 +871,7 @@
       var price = document.createElement('span');
       price.className = 'bd-card__price v-nums';
       if (b.old) { var old = document.createElement('s'); old.textContent = b.old; price.appendChild(old); }
-      price.appendChild(document.createTextNode(b.price));
+      price.appendChild(document.createTextNode(sum));
       cap.appendChild(price);
       card.appendChild(img); card.appendChild(hint); card.appendChild(cap);
       function pick() { if (!b.sold && window.__orderOpen) window.__orderOpen({ name: b.name, price: b.price }); }
